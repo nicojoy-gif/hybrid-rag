@@ -1,0 +1,24 @@
+
+services:
+  backend:
+    build: .
+    container_name: knowbase-backend
+    ports:
+      - "8000:8000"
+    environment:
+      OLLAMA_HOST: "http://host.docker.internal:11434"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./data/raw:/app/data/raw
+
+  frontend:
+    build:
+      context: ../frontend
+      args:
+        NEXT_PUBLIC_API_URL: "http://localhost:8000"
+    container_name: knowbase-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
